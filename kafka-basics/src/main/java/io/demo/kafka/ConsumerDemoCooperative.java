@@ -2,6 +2,7 @@ package io.demo.kafka;
 
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
+import org.apache.kafka.clients.consumer.CooperativeStickyAssignor;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
 import org.apache.kafka.common.errors.WakeupException;
 import org.apache.kafka.common.serialization.StringDeserializer;
@@ -12,8 +13,7 @@ import java.time.Duration;
 import java.util.Arrays;
 import java.util.Properties;
 
-public class ConsumerDemoWithShutdown {
-
+public class ConsumerDemoCooperative {
     private static final Logger log = LoggerFactory.getLogger(ConsumerDemoWithShutdown.class.getSimpleName());
 
     public static void main(String[] args) {
@@ -32,6 +32,9 @@ public class ConsumerDemoWithShutdown {
         properties.setProperty("key.deserializer", StringDeserializer.class.getName());
         properties.setProperty("value.deserializer", StringDeserializer.class.getName());
         properties.setProperty("group.id", groupId);
+        properties.setProperty("partition.assignment.strategy", CooperativeStickyAssignor.class.getName());
+//        properties.setProperty("group.instance.id", "...."); // strategy for static assignments
+
         /**
          * none: 컨슈머 그룹이 없을 때 동작하지 않는다.
          * earliest: 토픽을 맨 처음부터 읽는다.
